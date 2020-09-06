@@ -1,11 +1,13 @@
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from snippets.models import Snippet
 from snippets.serializers import SnippetSerializer
 
-@csrf_exempt # django에서 CSRF 토큰을 이용해 CSRF공격 방지
-def snippet_list(request):
+#@csrf_exempt # django에서 CSRF 토큰을 이용해 CSRF공격 방지
+@api_view(['GET', 'POST']) # @api_view는 function based views, APIView class는 class-based views
+def snippet_list(request, format=None):
     """
     List all code snippets, or create a new snippet.
     """
@@ -22,8 +24,9 @@ def snippet_list(request):
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
-@csrf_exempt
-def snippet_detail(request, pk):
+#@csrf_exempt
+@api_view(['GET', 'PUT', 'DELETE'])
+def snippet_detail(request, pk, format=None):
     """
     Retrieve, update or delete a code snippet.
     """
